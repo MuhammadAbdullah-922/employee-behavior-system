@@ -9,16 +9,16 @@ use App\Models\Role;
 class EmployeeController extends Controller
 {
     /**
-     * Display a listing of the resource.
+     * Display all employees
      */
     public function index()
     {
-        $employees = Employee::all();
+        $employees = Employee::with('role')->get();
         return view('employees.index', compact('employees'));
     }
 
     /**
-     * Show the form for creating a new resource.
+     * Show create form
      */
     public function create()
     {
@@ -27,7 +27,7 @@ class EmployeeController extends Controller
     }
 
     /**
-     * Store a newly created resource in storage.
+     * Store employee
      */
     public function store(Request $request)
     {
@@ -36,25 +36,21 @@ class EmployeeController extends Controller
             'email'   => 'required|email|unique:employees,email',
             'role_id' => 'required|exists:roles,id',
             'phone'   => 'nullable|string|max:15',
-            'shift'   => 'nullable|string|max:50',
-            'branch'  => 'nullable|string|max:100',
         ]);
 
-        Employee::create($request->all());
+        Employee::create([
+            'name'    => $request->name,
+            'email'   => $request->email,
+            'role_id' => $request->role_id,
+            'phone'   => $request->phone,
+        ]);
 
-        return redirect()->route('employees.index')->with('success', 'Employee added successfully!');
+        return redirect()->route('employees.index')
+            ->with('success', 'Employee added successfully!');
     }
 
     /**
-     * Display the specified resource.
-     */
-    public function show(string $id)
-    {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
+     * Edit form
      */
     public function edit(Employee $employee)
     {
@@ -63,7 +59,7 @@ class EmployeeController extends Controller
     }
 
     /**
-     * Update the specified resource in storage.
+     * Update employee
      */
     public function update(Request $request, Employee $employee)
     {
@@ -72,21 +68,27 @@ class EmployeeController extends Controller
             'email'   => "required|email|unique:employees,email,{$employee->id}",
             'role_id' => 'required|exists:roles,id',
             'phone'   => 'nullable|string|max:15',
-            'shift'   => 'nullable|string|max:50',
-            'branch'  => 'nullable|string|max:100',
         ]);
 
-        $employee->update($request->all());
+        $employee->update([
+            'name'    => $request->name,
+            'email'   => $request->email,
+            'role_id' => $request->role_id,
+            'phone'   => $request->phone,
+        ]);
 
-        return redirect()->route('employees.index')->with('success', 'Employee updated successfully!');
+        return redirect()->route('employees.index')
+            ->with('success', 'Employee updated successfully!');
     }
 
     /**
-     * Remove the specified resource from storage.
+     * Delete employee
      */
     public function destroy(Employee $employee)
     {
         $employee->delete();
-        return redirect()->route('employees.index')->with('success', 'Employee deleted successfully!');
+
+        return redirect()->route('employees.index')
+            ->with('success', 'Employee deleted successfully!');
     }
 }

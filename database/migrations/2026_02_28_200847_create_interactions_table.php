@@ -15,7 +15,7 @@ return new class extends Migration
         $table->id();
         $table->foreignId('employee_id')->constrained('employees')->onDelete('cascade');
         $table->string('customer_name')->nullable();
-        $table->time('response_time')->nullable();
+        $table->integer('response_time')->nullable();
         $table->json('facial_emotions')->nullable();
         $table->timestamps();
     });

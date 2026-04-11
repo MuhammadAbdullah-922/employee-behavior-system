@@ -5,24 +5,24 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
-use App\Models\Role; // add this
+use App\Models\Role;
 
 class User extends Authenticatable
 {
     use HasFactory, Notifiable;
 
     /**
-     * The attributes that are mass assignable.
+     * Mass assignable fields
      */
     protected $fillable = [
         'name',
         'email',
         'password',
-        'role_id', // add role_id here
+        'role_id',
     ];
 
     /**
-     * The attributes that should be hidden for serialization.
+     * Hidden fields for security
      */
     protected $hidden = [
         'password',
@@ -30,7 +30,7 @@ class User extends Authenticatable
     ];
 
     /**
-     * The attributes that should be cast.
+     * Casts
      */
     protected $casts = [
         'email_verified_at' => 'datetime',
@@ -38,7 +38,7 @@ class User extends Authenticatable
     ];
 
     /**
-     * Relationship: A user belongs to a role
+     * Relationship: User belongs to Role
      */
     public function role()
     {
@@ -46,20 +46,30 @@ class User extends Authenticatable
     }
 
     /**
-     * Helper methods to check role quickly
+     * ================= ROLE HELPERS =================
      */
+
+    // ADMIN CHECK
     public function isAdmin()
     {
         return $this->role && $this->role->name === 'Admin';
     }
 
-    public function isManager()
+    // EMPLOYEE CHECK
+    public function isEmployee()
     {
-        return $this->role && $this->role->name === 'Branch Manager';
+        return $this->role && $this->role->name === 'Employee';
     }
 
-    public function isSupervisor()
-    {
-        return $this->role && $this->role->name === 'Supervisor';
-    }
+    // SUPERVISOR CHECK
+    // public function isSupervisor()
+    // {
+    //     return $this->role && $this->role->name === 'Supervisor';
+    // }
+
+    // // BRANCH MANAGER CHECK
+    // public function isManager()
+    // {
+    //     return $this->role && $this->role->name === 'Branch Manager';
+    // }
 }
